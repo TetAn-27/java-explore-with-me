@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StatDtoForGet {
-    String app;
-    String uri;
-    int hits;
+public class StateDtoForGet {
+    private String app;
+    private String uri;
+    private int hits;
 }

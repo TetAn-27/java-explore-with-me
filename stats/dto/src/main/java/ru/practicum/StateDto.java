@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StatDto {
-    Integer id;
-    String app;
-    String uri;
-    String ip;
-    LocalDateTime timestamp;
+public class StateDto {
+    private Integer id;
+    private String app;
+    private String uri;
+    private String ip;
+    private LocalDateTime timestamp;
 }
