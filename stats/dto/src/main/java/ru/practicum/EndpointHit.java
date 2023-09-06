@@ -24,5 +24,5 @@ public class EndpointHit {
     @Column(name = "ip", nullable = false)
     private String ip;
     @Column(name = "timestamp", nullable = false)
-    private LocalDateTime timestamp;
+    private String timestamp;
 }
