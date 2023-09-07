@@ -10,5 +10,5 @@ import java.util.List;
 public interface StatRepository extends JpaRepository<EndpointHit, Integer> {
 
     EndpointHit save(EndpointHit endpointHit);
-    //List<EndpointHit> findAllThatTimestampBetweenStartAndEnd(LocalDateTime start, LocalDateTime end);
+    List<EndpointHit> findAll();
 }

@@ -27,10 +27,8 @@ public class StatServiceImpl implements StateService {
     }
 
     @Override
-    public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
-        return null;
-    }
-        /*List<EndpointHit> endpointHits = statRepository.findAllThatTimestampBetweenStartAndEnd(start, end);
+    public List<ViewStats> getStats(String start, String end, List<String> uris, Boolean unique) {
+        List<EndpointHit> endpointHits = statRepository.findAll();
         List<ViewStats> viewStats = new ArrayList<>();
         for (String uri : uris) {
             viewStats.add(getViewStats(endpointHits, uri));
@@ -48,5 +46,5 @@ public class StatServiceImpl implements StateService {
                 uris,
                 endpointHitsFilter.size()
         );
-    }*/
+    }
 }

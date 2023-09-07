@@ -30,8 +30,8 @@ public class StatController {
     }
 
     @GetMapping("/stats")
-    public List<ViewStats> getStats(@RequestParam(value = "start") @NotNull LocalDateTime start,
-                                    @RequestParam(value = "end") @NotNull LocalDateTime end,
+    public List<ViewStats> getStats(@RequestParam(value = "start") @NotNull String start,
+                                    @RequestParam(value = "end") @NotNull String end,
                                     @RequestParam(value = "uris") List<String> uris,
                                     @RequestParam(value = "unique", defaultValue = "false",
                                                    required = false) boolean unique) {
