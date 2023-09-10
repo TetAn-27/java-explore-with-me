@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -25,4 +24,12 @@ public class EndpointHit {
     private String ip;
     @Column(name = "timestamp", nullable = false)
     private String timestamp;
+
+    @Data
+    @AllArgsConstructor
+    public static class EndpointHitForGet {
+        private String app;
+        private String uri;
+        private String ip;
+    }
 }

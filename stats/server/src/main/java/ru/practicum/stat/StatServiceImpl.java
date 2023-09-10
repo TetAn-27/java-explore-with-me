@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.EndpointHit;
 import ru.practicum.ViewStats;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,23 +25,39 @@ public class StatServiceImpl implements StateService {
 
     @Override
     public List<ViewStats> getStats(String start, String end, List<String> uris, Boolean unique) {
-        List<EndpointHit> endpointHits = statRepository.findAll();
-        List<ViewStats> viewStats = new ArrayList<>();
-        for (String uri : uris) {
-            viewStats.add(getViewStats(endpointHits, uri));
+        List<EndpointHit.EndpointHitForGet> endpointHits;
+        if (uris==null) {
+            if (unique) {
+                endpointHits = statRepository.findDistinctByTimestampBetween(start, end);
+                return getViewStatsFromMap(groupByUri(endpointHits));
+            }
+            endpointHits = statRepository.findByTimestampBetween(start, end);
+            return getViewStatsFromMap(groupByUri(endpointHits));
         }
-        return viewStats;
+        if (unique) {
+            endpointHits = statRepository.findDistinctByTimestampBetweenAndUriIn(start, end, uris);
+            return getViewStatsFromMap(groupByUri(endpointHits));
+        }
+        endpointHits = statRepository.findByTimestampBetweenAndUriIn(start, end, uris);
+        return getViewStatsFromMap(groupByUri(endpointHits));
     }
 
-    private ViewStats getViewStats(List<EndpointHit> endpointHits, String uris) {
-        List<EndpointHit> endpointHitsFilter = endpointHits.stream()
-                .filter(i -> !i.getUri().equals(uris))
-                .collect(Collectors.toList());
+    private Map<String, List<EndpointHit.EndpointHitForGet>> groupByUri(List<EndpointHit.EndpointHitForGet> endpointHits) {
+        return endpointHits.stream()
+                .collect(Collectors.groupingBy(EndpointHit.EndpointHitForGet::getUri));
+    }
 
-        return new ViewStats(
-                endpointHitsFilter.get(1).getApp(),
-                uris,
-                endpointHitsFilter.size()
-        );
+    private List<ViewStats> getViewStatsFromMap(Map<String, List<EndpointHit.EndpointHitForGet>> endpointHitsMap) {
+        List<ViewStats> viewStatsList = new ArrayList<>();
+        for (String uri : endpointHitsMap.keySet()) {
+            List<EndpointHit.EndpointHitForGet> endpointHitList = endpointHitsMap.get(uri);
+            viewStatsList.add(new ViewStats(
+                    endpointHitList.get(0).getApp(),
+                    uri,
+                    endpointHitList.size()));
+        }
+        return viewStatsList.stream()
+                .sorted(Comparator.comparingLong(ViewStats::getHits).reversed())
+                .collect(Collectors.toList());
     }
 }
