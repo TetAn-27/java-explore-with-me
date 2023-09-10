@@ -5,7 +5,7 @@ import ru.practicum.EndpointHit;
 
 import java.util.List;
 
-public interface StatRepository extends JpaRepository<EndpointHit, Integer> {
+public interface StatRepository extends JpaRepository<EndpointHit, Long> {
 
     EndpointHit save(EndpointHit endpointHit);
     List<EndpointHit.EndpointHitForGet> findByTimestampBetweenAndUriIn(String start, String end, Iterable uri);
