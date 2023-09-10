@@ -1,6 +1,4 @@
-package ru.practicum;
-
-import java.util.List;
+package ru.practicum.dto;
 
 public class StatMapper {
 

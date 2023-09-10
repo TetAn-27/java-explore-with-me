@@ -2,8 +2,8 @@ package ru.practicum.stat;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.practicum.EndpointHit;
-import ru.practicum.ViewStats;
+import ru.practicum.dto.EndpointHit;
+import ru.practicum.dto.ViewStats;
 
 import java.util.*;
 import java.util.stream.Collectors;
