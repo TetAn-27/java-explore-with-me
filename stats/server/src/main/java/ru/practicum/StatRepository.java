@@ -1,8 +1,9 @@
-package ru.practicum.stat;
+package ru.practicum;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.practicum.dto.EndpointHit;
+import ru.practicum.EndpointHit;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StatRepository extends JpaRepository<EndpointHit, Long> {

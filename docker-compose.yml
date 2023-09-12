@@ -8,8 +8,8 @@ services:
       - stats-db
       #- ewm-service
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/stats
-      - SPRING_DATASOURCE_USERNAME=user
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
+      - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
 
   stats-db:
@@ -20,7 +20,7 @@ services:
       - /var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=stats
-      - POSTGRES_USER=user
+      - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
 
   #ewm-service:

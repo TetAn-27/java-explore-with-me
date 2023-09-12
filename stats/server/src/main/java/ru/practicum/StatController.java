@@ -1,11 +1,9 @@
-package ru.practicum.stat;
+package ru.practicum;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.dto.EndpointHit;
-import ru.practicum.dto.ViewStats;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
