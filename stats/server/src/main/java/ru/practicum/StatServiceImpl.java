@@ -23,7 +23,7 @@ public class StatServiceImpl implements StateService {
     }
 
     @Override
-    public List<ViewStats> getStats(String start, String end, List<String> uris, Boolean unique) {
+    public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         List<EndpointHit.EndpointHitForGet> endpointHits;
         if (uris==null) {
             if (unique) {
