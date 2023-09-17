@@ -1,6 +1,7 @@
 package ru.practicum;
 
 import org.springframework.data.domain.PageRequest;
+import ru.practicum.model.CompilationDto;
 import ru.practicum.model.event.EventFullDto;
 import ru.practicum.model.user.UserDto;
 import ru.practicum.model.category.CategoryDto;
@@ -28,4 +29,10 @@ public interface MainService {
     Optional<UserDto> createUser(UserDto userDto);
 
     void deleteUser(long userId);
+
+    Optional<CompilationDto> addCompilation(CompilationDto compilationDto);
+
+    void deleteCompilation(Long compId);
+
+    Optional<CompilationDto> updateCompilation(Long compId, CompilationDto compilationDto);
 }

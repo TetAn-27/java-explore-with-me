@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.MainService;
+import ru.practicum.model.CompilationDto;
 import ru.practicum.model.user.UserDto;
 import ru.practicum.model.category.CategoryDto;
 import ru.practicum.model.event.EventFullDto;
@@ -87,5 +88,21 @@ public class AdminController {
     @DeleteMapping("/users/{userId}")
     public void deleteUser(@PathVariable("userId") Long userId) {
         mainService.deleteUser(userId);
+    }
+
+    @PostMapping("/compilations")
+    public ResponseEntity<CompilationDto> addCompilation(@RequestBody CompilationDto compilationDto) {
+        return ResponseEntity.of(mainService.addCompilation(compilationDto));
+    }
+
+    @DeleteMapping("/compilation/{compId}")
+    public void deleteCompilation(@PathVariable("compId") Long compId) {
+        mainService.deleteCompilation(compId);
+    }
+
+    @PatchMapping("/compilations/{compId}")
+    public ResponseEntity<CompilationDto> updateCompilation(@PathVariable("compId") Long compId,
+                                                            @RequestBody CompilationDto compilationDto) {
+        return ResponseEntity.of(mainService.updateCompilation(compId, compilationDto));
     }
 }
