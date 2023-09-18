@@ -1,4 +1,4 @@
-package ru.practicum;
+package ru.practicum.service;
 
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.model.CompilationDto;
@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public interface MainService {
+public interface AdminService {
     Optional<CategoryDto> addNewCategory(CategoryDto categoryDto);
 
     Optional<CategoryDto> updateCategory(long catId, CategoryDto categoryDto);
 
     void deleteCategory(long catId);
 
-    public List<EventFullDto> getAllEventsInfo(Map<String, ? extends List<? extends Serializable>> parameters,
+    List<EventFullDto> getAllEventsInfo(Map<String, ? extends List<? extends Serializable>> parameters,
                                                LocalDateTime rangeStart, LocalDateTime rangeEnd, PageRequest pageRequest);
 
     List<EventFullDto> getEventInfo(long id);
