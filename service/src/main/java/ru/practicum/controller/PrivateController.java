@@ -76,13 +76,13 @@ public class PrivateController {
 
     @PostMapping("/{userId}/requests")
     public ResponseEntity<ParticipationRequestDto> addRequest(@PathVariable(value = "userId") Long userId,
-                                                    @RequestParam(value = "eventId") Long eventId) {
+                                                              @RequestParam(value = "eventId") Long eventId) {
         return ResponseEntity.of(privateService.addRequest(userId, eventId));
     }
 
     @PatchMapping("/{userId}/requests/{requestId}/cancel")
     public ResponseEntity<ParticipationRequestDto> cancelRequest(@PathVariable(value = "userId") Long userId,
-                                                       @PathVariable(value = "requestId") Long requestId) {
+                                                                 @PathVariable(value = "requestId") Long requestId) {
         return ResponseEntity.of(privateService.cancelRequest(userId, requestId));
     }
 }
