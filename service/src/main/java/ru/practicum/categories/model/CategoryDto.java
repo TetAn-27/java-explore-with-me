@@ -1,4 +1,4 @@
-package ru.practicum.model.category;
+package ru.practicum.categories.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

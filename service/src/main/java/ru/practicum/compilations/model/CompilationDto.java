@@ -1,6 +1,6 @@
-package ru.practicum.model;
+package ru.practicum.compilations.model;
 
-import ru.practicum.model.event.EventShortDto;
+import ru.practicum.events.model.EventShortDto;
 
 public class CompilationDto {
     long id;

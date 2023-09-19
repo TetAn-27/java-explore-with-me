@@ -1,4 +1,4 @@
-package ru.practicum.model.event;
+package ru.practicum.events.model;
 
 public class Location {
     float lat;

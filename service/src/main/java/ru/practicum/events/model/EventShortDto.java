@@ -1,23 +1,24 @@
-package ru.practicum.model.event;
+package ru.practicum.events.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.model.category.CategoryDto;
+import ru.practicum.categories.model.CategoryDto;
+import ru.practicum.users.model.UserDto;
 
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EventDto {
+public class EventShortDto {
     String annotation;
     CategoryDto category;
-    String description;
+    int confirmedRequests;
     LocalDateTime eventDate;
-    Location location;
+    Integer id;
+    UserDto.UserShortDto initiator;
     boolean paid;
-    int participantLimit;
-    boolean requestModeration;
     String title;
+    int views;
 }

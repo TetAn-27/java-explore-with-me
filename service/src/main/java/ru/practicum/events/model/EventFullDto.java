@@ -1,10 +1,10 @@
-package ru.practicum.model.event;
+package ru.practicum.events.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.model.user.UserDto;
-import ru.practicum.model.category.CategoryDto;
+import ru.practicum.users.model.UserDto;
+import ru.practicum.categories.model.CategoryDto;
 
 import java.time.LocalDateTime;
 
