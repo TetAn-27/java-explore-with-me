@@ -5,7 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.users.model.UserDto;
-import ru.practicum.users.UserService;
+import ru.practicum.users.service.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;

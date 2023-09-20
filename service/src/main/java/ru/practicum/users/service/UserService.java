@@ -1,4 +1,4 @@
-package ru.practicum.users;
+package ru.practicum.users.service;
 
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.users.model.UserDto;
