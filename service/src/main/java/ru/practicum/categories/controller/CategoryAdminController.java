@@ -1,12 +1,17 @@
 package ru.practicum.categories.controller;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.categories.CategoryService;
+import ru.practicum.categories.service.CategoryService;
 import ru.practicum.categories.model.CategoryDto;
 
 import javax.validation.Valid;
 
+@Slf4j
+@Validated
 @RestController
 @RequestMapping(path = "/admin")
 public class CategoryAdminController {

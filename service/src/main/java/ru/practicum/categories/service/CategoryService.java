@@ -1,4 +1,4 @@
-package ru.practicum.categories;
+package ru.practicum.categories.service;
 
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.categories.model.CategoryDto;
