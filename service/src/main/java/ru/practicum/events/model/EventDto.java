@@ -5,19 +5,30 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.categories.model.CategoryDto;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class EventDto {
-    String annotation;
-    CategoryDto category;
-    String description;
-    LocalDateTime eventDate;
-    Location location;
-    boolean paid;
-    int participantLimit;
-    boolean requestModeration;
-    String title;
+    @NotNull
+    private String annotation;
+    @NotNull
+    private long categoryId;
+    private long confirmedRequests;
+    private LocalDateTime createdOn;
+    @NotNull
+    private String description;
+    @NotNull
+    private LocalDateTime eventDate;
+    @NotNull
+    private Location location;
+    private boolean paid;
+    private int participantLimit;
+    private LocalDateTime publishedOn;
+    private boolean requestModeration;
+    private State state;
+    @NotNull
+    private String title;
 }
