@@ -9,4 +9,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     User save(User user);
     void deleteById(long userId);
     Page<User> findByIdIn(Iterable ids, Pageable page);
+    User getById(long id);
 }

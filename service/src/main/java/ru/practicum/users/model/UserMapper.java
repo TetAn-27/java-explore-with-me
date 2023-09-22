@@ -13,6 +13,13 @@ public class UserMapper {
         );
     }
 
+    public static UserDto.UserShortDto toUserShortDto(User user) {
+        return new UserDto.UserShortDto(
+                user.getId(),
+                user.getName()
+        );
+    }
+
     public static User toUser(UserDto userDto) {
         return new User(
                 0,

@@ -15,16 +15,16 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class UserDto {
 
-    long id;
+    private long id;
     @Email(message = "Некорректный email")
     @NotEmpty(message = "Email не может быть пустым")
-    String email;
-    String name;
+    private String email;
+    private String name;
 
     @Data
     @AllArgsConstructor
-    public class UserShortDto {
-        long id;
-        String name;
+    public static class UserShortDto {
+        private long id;
+        private String name;
     }
 }
