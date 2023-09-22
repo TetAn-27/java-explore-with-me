@@ -4,7 +4,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.events.EventService;
+import ru.practicum.events.model.EventUpdateDto;
+import ru.practicum.events.service.EventService;
 import ru.practicum.events.model.EventDto;
 import ru.practicum.events.model.EventFullDto;
 import ru.practicum.events.model.EventShortDto;
@@ -35,7 +36,7 @@ public class EventPrivateController {
     }
 
     @PostMapping("/{userId}/events")
-    public ResponseEntity<EventDto> addEvent(@PathVariable(value = "userId") Long userId,
+    public ResponseEntity<EventFullDto> addEvent(@PathVariable(value = "userId") Long userId,
                                              @RequestBody  @Valid EventDto eventDto) {
         return ResponseEntity.of(eventService.addEvent(userId, eventDto));
     }
@@ -49,7 +50,7 @@ public class EventPrivateController {
     @PatchMapping("/{userId}/events/{eventId}")
     public ResponseEntity<EventFullDto> updateEvent(@PathVariable(value = "userId") Long userId,
                                                     @PathVariable(value = "eventId") Long eventId,
-                                                    @RequestBody  @Valid EventDto eventDto) {
-        return ResponseEntity.of(eventService.updateEvent(userId, eventId, eventDto));
+                                                    @RequestBody  @Valid EventUpdateDto eventUpdateDto) {
+        return ResponseEntity.of(eventService.updateEvent(userId, eventId, eventUpdateDto));
     }
 }

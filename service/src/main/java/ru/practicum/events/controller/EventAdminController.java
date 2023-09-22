@@ -3,10 +3,13 @@ package ru.practicum.events.controller;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.events.EventService;
+import ru.practicum.events.model.EventUpdateDto;
+import ru.practicum.events.service.EventService;
 import ru.practicum.events.model.EventFullDto;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -47,8 +50,9 @@ public class EventAdminController {
         return eventService.getAllEventsInfo(parameters, rangeStart, rangeEnd, pageRequest);
     }
 
-    @GetMapping("/{id}")
-    public List<EventFullDto> getEventInfo(@PathVariable("id") Long id) {
-        return eventService.getEventInfo(id);
+    @PatchMapping("/{eventId}")
+    public ResponseEntity<EventFullDto> updateEventAdmin(@PathVariable(value = "eventId") Long eventId,
+                                                         @RequestBody EventUpdateDto eventUpdateDto) {
+        return ResponseEntity.of(eventService.updateEventAdmin(eventId, eventUpdateDto));
     }
 }

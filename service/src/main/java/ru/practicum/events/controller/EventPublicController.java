@@ -5,7 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.events.EventService;
+import ru.practicum.events.service.EventService;
 import ru.practicum.events.model.EventShortDto;
 
 import javax.validation.constraints.NotNull;
