@@ -1,9 +1,10 @@
-package ru.practicum.events;
+package ru.practicum.events.service;
 
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.events.model.EventDto;
 import ru.practicum.events.model.EventFullDto;
 import ru.practicum.events.model.EventShortDto;
+import ru.practicum.events.model.EventUpdateDto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -15,16 +16,16 @@ public interface EventService {
 
     List<EventShortDto> getAllEventsUser(long userId, PageRequest pageRequest);
 
-    Optional<EventDto> addEvent(long userId, EventDto eventDto);
+    Optional<EventFullDto> addEvent(long userId, EventDto eventDto);
 
     Optional<EventFullDto> getEvent(long userId, long eventId);
 
-    Optional<EventFullDto> updateEvent(long userId, long eventId, EventDto eventDto);
+    Optional<EventFullDto> updateEvent(long userId, long eventId, EventUpdateDto eventUpdateDto);
 
     List<EventFullDto> getAllEventsInfo(Map<String, ? extends List<? extends Serializable>> parameters,
                                         LocalDateTime rangeStart, LocalDateTime rangeEnd, PageRequest pageRequest);
 
-    List<EventFullDto> getEventInfo(long id);
+    Optional<EventFullDto> updateEventAdmin(long eventId, EventUpdateDto eventUpdateDto);
 
     List<EventShortDto> getPublicEventsInfo(Map<String, Object> parameters, List<Long> categories,
                                             LocalDateTime rangeStart, LocalDateTime rangeEnd, PageRequest pageRequest);
