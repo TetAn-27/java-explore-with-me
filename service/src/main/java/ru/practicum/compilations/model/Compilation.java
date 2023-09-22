@@ -3,16 +3,22 @@ package ru.practicum.compilations.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import ru.practicum.events.model.EventShortDto;
+import ru.practicum.events.model.Event;
 
+import javax.persistence.*;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompilationDto {
+@Entity
+@Table(name = "compilations")
+public class Compilation {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private List<EventShortDto> events;
+    @Transient
+    private List<Event> events;
     private boolean pinned;
     private String title;
 }

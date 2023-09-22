@@ -1,7 +1,8 @@
-package ru.practicum.compilations;
+package ru.practicum.compilations.service;
 
 import org.springframework.data.domain.PageRequest;
 import ru.practicum.compilations.model.CompilationDto;
+import ru.practicum.compilations.model.NewCompilationDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,9 +13,9 @@ public interface CompilationService {
 
     Optional<CompilationDto> getCompilationById(long compId);
 
-    Optional<CompilationDto> addCompilation(CompilationDto compilationDto);
+    Optional<CompilationDto> addCompilation(NewCompilationDto newCompilationDto);
 
-    void deleteCompilation(Long compId);
+    void deleteCompilation(long compId);
 
-    Optional<CompilationDto> updateCompilation(Long compId, CompilationDto compilationDto);
+    Optional<CompilationDto> updateCompilation(long compId, NewCompilationDto newCompilationDto);
 }
