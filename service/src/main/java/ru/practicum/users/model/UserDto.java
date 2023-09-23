@@ -7,8 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.*;
 
 @Data
 @AllArgsConstructor
@@ -18,7 +17,12 @@ public class UserDto {
     private long id;
     @Email(message = "Некорректный email")
     @NotEmpty(message = "Email не может быть пустым")
+    @Size(min = 6, max = 254)
     private String email;
+    @NotNull(message = "поле name является обязательным")
+    @NotBlank(message = "Name не может состоять из пробелов")
+    @NotEmpty(message = "Name не может быть пустым")
+    @Size(min = 2, max = 250)
     private String name;
 
     @Data

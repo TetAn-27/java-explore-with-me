@@ -3,6 +3,7 @@ package ru.practicum.users.controller;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,13 +33,13 @@ public class UserAdminController {
                                              required = false) int page,
                                      @Positive @RequestParam(value = "size", defaultValue = "10",
                                              required = false) int size) {
-        PageRequest pageRequest = PageRequest.of(page / size, size, Sort.Direction.DESC, "start");
+        PageRequest pageRequest = PageRequest.of(page / size, size, Sort.Direction.ASC, "id");
         return userService.getAllUsers(ids, pageRequest);
     }
 
     @PostMapping()
     public ResponseEntity<UserDto> createUser(@RequestBody  @Valid UserDto userDto) {
-        return ResponseEntity.of(userService.createUser(userDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(userService.createUser(userDto).get());
     }
 
     @DeleteMapping("/{userId}")

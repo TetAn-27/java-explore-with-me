@@ -29,7 +29,12 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> getAllUsers(List<Long> ids, PageRequest pageRequestMethod) {
         Pageable page = pageRequestMethod;
         do {
-            Page<User> pageRequest = userRepository.findByIdIn(ids, page);
+            Page<User> pageRequest;
+            if (ids == null) {
+                pageRequest = userRepository.findAll(page);
+            } else {
+                pageRequest = userRepository.findByIdIn(ids, page);
+            }
             pageRequest.getContent().forEach(ItemRequest -> {
             });
             if (pageRequest.hasNext()) {
