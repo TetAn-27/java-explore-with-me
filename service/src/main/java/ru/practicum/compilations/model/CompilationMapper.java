@@ -19,7 +19,7 @@ public class CompilationMapper {
 
     public static Compilation toCompilation(NewCompilationDto newCompilationDto, List<Event> events) {
         return new Compilation(
-                newCompilationDto.getId(),
+                0,
                 events,
                 newCompilationDto.getPinned(),
                 newCompilationDto.getTitle()
