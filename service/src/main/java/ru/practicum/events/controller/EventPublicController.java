@@ -5,6 +5,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.events.model.EventFullDto;
 import ru.practicum.events.service.EventService;
 import ru.practicum.events.model.EventShortDto;
 
@@ -45,12 +46,12 @@ public class EventPublicController {
                 "paid", paid,
                 "isAvailable", isAvailable
         );
-        PageRequest pageRequest = PageRequest.of(page / size, size, Sort.Direction.DESC, "start");
+        PageRequest pageRequest = PageRequest.of(page / size, size, Sort.Direction.DESC, "{}", sort);
         return eventService.getPublicEventsInfo(parameters, categories, rangeStart, rangeEnd, pageRequest);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EventShortDto> getEventById(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<EventFullDto> getEventById(@PathVariable(value = "id") Long id) {
         return ResponseEntity.of(eventService.getEventById(id));
     }
 }

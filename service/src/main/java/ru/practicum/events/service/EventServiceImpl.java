@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -78,11 +77,11 @@ public class EventServiceImpl implements EventService {
     public Optional<EventFullDto> updateEvent(long userId, long eventId, EventUpdateDto eventUpdateDto) {
         Event eventOld = eventRepository.getById(eventId);
         if (eventOld.getState().equals(State.PUBLISHED)) {
-            throw new ConflictException("Событие уже опубликовано. Изменение события невозмлжно.");
+            throw new ConflictException("Событие уже опубликовано. Изменение события невозможно.");
         }
-        if ((eventUpdateDto == null && eventOld.getEventDate().isBefore(LocalDateTime.now().plusHours(2))) ||
-                Objects.requireNonNull(eventUpdateDto).getEventDate().isBefore(LocalDateTime.now().plusHours(2))) {
-            throw new ConflictException("Начало события должно быть спустя два часа от текущего врмени");
+        if ((eventUpdateDto == null && eventOld.getEventDate().isAfter(LocalDateTime.now().minusHours(2))) ||
+                Objects.requireNonNull(eventUpdateDto).getEventDate().isAfter(LocalDateTime.now().minusHours(2))) {
+            throw new ConflictException("Начало события должно быть не раньше, чем за два часа от текущего врмени");
         }
         Event event = getUpdateEvent(eventOld, eventUpdateDto);
         return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event)));
@@ -115,21 +114,49 @@ public class EventServiceImpl implements EventService {
     @Override
     public Optional<EventFullDto> updateEventAdmin(long eventId, EventUpdateDto eventUpdateDto) {
         Event eventOld = eventRepository.getById(eventId);
-        if (eventOld.getState().equals(State.PUBLISHED)) {
-            throw new ConflictException("Событие уже опубликовано. Изменение события невозмлжно.");
+        if ((eventUpdateDto == null && eventOld.getEventDate().isAfter(LocalDateTime.now().minusHours(1))) ||
+                Objects.requireNonNull(eventUpdateDto).getEventDate().isAfter(LocalDateTime.now().minusHours(1))) {
+            throw new ConflictException("Начало события должно быть не раньше, чем за час от даты публикации");
+        }
+        if (!eventOld.getState().equals(State.PENDING) && eventUpdateDto.getStateAction().equals(State.PUBLISHED)) {
+            throw new ConflictException("Событие можно опубликовать, только если оно находится в состоянии ожидания публикации.");
+        }
+        if (eventOld.getState().equals(State.PUBLISHED) && eventUpdateDto.getStateAction().equals(State.CANCELED)) {
+            throw new ConflictException("Событие уже опубликовано. Изменение события невозможно.");
         }
         Event event = getUpdateEvent(eventOld, eventUpdateDto);
+        event.setPublishedOn(LocalDateTime.now());
         return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event)));
     }
 
     @Override
-    public List<EventShortDto> getPublicEventsInfo(Map<String, Object> parameters, List<Long> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, PageRequest pageRequest) {
-        return null;
+    public List<EventShortDto> getPublicEventsInfo(Map<String, Object> parameters, List<Long> categories,
+                 LocalDateTime rangeStart, LocalDateTime rangeEnd, PageRequest pageRequestMethod) {
+        Pageable page = pageRequestMethod;
+        do {
+            Page<Event> pageRequest = eventRepository.findByEventDateBetweenAndCategoryIdInAndPaidAndAnnotationContainingIgnoreCaseAndDescriptionContainingIgnoreCase(
+                    rangeStart, rangeEnd, categories, (Boolean) parameters.get("paid"), String.valueOf(parameters.get("text")).toLowerCase(),
+                    String.valueOf(parameters.get("text")).toLowerCase(), page);
+            pageRequest.getContent().forEach(ItemRequest -> {
+            });
+            if (pageRequest.hasNext()) {
+                page = PageRequest.of(pageRequest.getNumber() + 1, pageRequest.getSize(), pageRequest.getSort());
+            } else {
+                page = null;
+            }
+            return EventMapper.toListEventShortDto(pageRequest.getContent());
+        } while (page != null);
     }
 
     @Override
-    public Optional<EventShortDto> getEventById(long id) {
-        return Optional.empty();
+    public Optional<EventFullDto> getEventById(long id) {
+        try {
+            Event event = eventRepository.getByIdAndState(id, State.PUBLISHED);
+            return Optional.of(EventMapper.toEventFullDto(event));
+        } catch (EntityNotFoundException ex) {
+            log.error("События с Id {} не найдено", id);
+            throw new NotFoundException("События с таким Id не было найдено");
+        }
     }
 
     private Event getUpdateEvent(Event event, EventUpdateDto eventUpdate) {

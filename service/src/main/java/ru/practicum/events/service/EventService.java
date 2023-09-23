@@ -30,5 +30,5 @@ public interface EventService {
     List<EventShortDto> getPublicEventsInfo(Map<String, Object> parameters, List<Long> categories,
                                             LocalDateTime rangeStart, LocalDateTime rangeEnd, PageRequest pageRequest);
 
-    Optional<EventShortDto> getEventById(long id);
+    Optional<EventFullDto> getEventById(long id);
 }

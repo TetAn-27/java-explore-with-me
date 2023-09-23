@@ -14,7 +14,7 @@ public class RequestMapper {
                 request.getCreated(),
                 request.getEvent().getId(),
                 request.getRequester().getId(),
-                request.getState()
+                request.getStatus()
         );
     }
 
@@ -24,7 +24,7 @@ public class RequestMapper {
                 requestDto.getCreated(),
                 event,
                 requester,
-                requestDto.getState()
+                requestDto.getStatus()
         );
     }
 
