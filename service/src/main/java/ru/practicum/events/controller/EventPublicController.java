@@ -30,9 +30,9 @@ public class EventPublicController {
     public List<EventShortDto> getPublicEventsInfo(@RequestParam(value = "text", required = false) String text,
                                                    @RequestParam(value = "categories", required = false) List<Long> categories,
                                                    @RequestParam(value = "paid", required = false) boolean paid,
-                                                   @RequestParam(value = "rangeStart") @NotNull
+                                                   @RequestParam(value = "rangeStart")
                                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-                                                   @RequestParam(value = "rangeEnd") @NotNull
+                                                   @RequestParam(value = "rangeEnd")
                                                        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                                    @RequestParam(value = "isAvailable", required = false,
                                                         defaultValue = "false") boolean isAvailable,

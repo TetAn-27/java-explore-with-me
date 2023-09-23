@@ -86,7 +86,7 @@ public class RequestServiceImpl implements RequestService {
                 LocalDateTime.now(),
                 event,
                 requester,
-                Status.PENDING
+                Status.CONFIRMED
         );
         return Optional.of(RequestMapper.toRequestDto(requestRepository.save(request)));
     }

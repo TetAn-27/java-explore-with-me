@@ -31,13 +31,13 @@ public class EventPrivateController {
                                                         required = false) int page,
                                                 @Positive @RequestParam(value = "size", defaultValue = "10",
                                                         required = false) int size) {
-        PageRequest pageRequest = PageRequest.of(page / size, size, Sort.Direction.DESC, "start");
+        PageRequest pageRequest = PageRequest.of(page / size, size, Sort.Direction.ASC, "id");
         return eventService.getAllEventsUser(userId, pageRequest);
     }
 
     @PostMapping("/{userId}/events")
     public ResponseEntity<EventFullDto> addEvent(@PathVariable(value = "userId") Long userId,
-                                             @RequestBody  @Valid EventDto eventDto) {
+                                                 @RequestBody  @Valid EventDto eventDto) {
         return ResponseEntity.of(eventService.addEvent(userId, eventDto));
     }
 

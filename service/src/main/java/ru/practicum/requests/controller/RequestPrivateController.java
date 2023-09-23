@@ -1,5 +1,6 @@
 package ru.practicum.requests.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -43,7 +44,7 @@ public class RequestPrivateController {
     @PostMapping("/{userId}/requests")
     public ResponseEntity<ParticipationRequestDto> addRequest(@PathVariable(value = "userId") Long userId,
                                                               @RequestParam(value = "eventId") Long eventId) {
-        return ResponseEntity.of(requestService.addRequest(userId, eventId));
+        return ResponseEntity.status(HttpStatus.CREATED).body(requestService.addRequest(userId, eventId).get());
     }
 
     @PatchMapping("/{userId}/requests/{requestId}/cancel")

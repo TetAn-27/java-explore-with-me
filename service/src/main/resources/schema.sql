@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS events(
     category_id BIGINT NOT NULL,
     confirmed_requests long,
     created_on TIMESTAMP WITHOUT TIME ZONE,
+    description varchar(250),
     event_date TIMESTAMP WITHOUT TIME ZONE,
     initiator_id BIGINT NOT NULL,
     location_id BIGINT NOT NULL,
