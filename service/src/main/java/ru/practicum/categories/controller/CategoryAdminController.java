@@ -1,7 +1,7 @@
 package ru.practicum.categories.controller;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +24,7 @@ public class CategoryAdminController {
 
     @PostMapping("/categories")
     public ResponseEntity<CategoryDto> addNewCategory(@RequestBody @Valid CategoryDto categoryDto) {
-        return ResponseEntity.of(categoryService.addNewCategory(categoryDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.addNewCategory(categoryDto).get());
     }
 
     @PatchMapping("/categories/{catId}")
