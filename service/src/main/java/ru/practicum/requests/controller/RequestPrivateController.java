@@ -4,8 +4,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import ru.practicum.requests.model.EventRequestStatus;
+import ru.practicum.requests.model.EventRequestStatusUpdate;
 import ru.practicum.requests.model.ParticipationRequestDto;
-import ru.practicum.requests.RequestService;
+import ru.practicum.requests.service.RequestService;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -27,9 +29,9 @@ public class RequestPrivateController {
     }
 
     @PatchMapping("/{userId}/events/{eventId}/requests")
-    public ResponseEntity<ParticipationRequestDto> updateRequestCurrentUser(@PathVariable(value = "userId") Long userId,
-                                                                            @PathVariable(value = "eventId") Long eventId,
-                                                                            @RequestBody  @Valid ParticipationRequestDto bodyDto) {
+    public ResponseEntity<EventRequestStatus> updateRequestCurrentUser(@PathVariable(value = "userId") Long userId,
+                                                                       @PathVariable(value = "eventId") Long eventId,
+                                                                       @RequestBody  @Valid EventRequestStatusUpdate bodyDto) {
         return ResponseEntity.of(requestService.updateRequestCurrentUser(userId, eventId, bodyDto));
     }
 

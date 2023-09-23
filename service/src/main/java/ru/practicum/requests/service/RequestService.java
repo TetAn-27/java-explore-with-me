@@ -1,5 +1,7 @@
-package ru.practicum.requests;
+package ru.practicum.requests.service;
 
+import ru.practicum.requests.model.EventRequestStatus;
+import ru.practicum.requests.model.EventRequestStatusUpdate;
 import ru.practicum.requests.model.ParticipationRequestDto;
 
 import java.util.List;
@@ -9,7 +11,7 @@ public interface RequestService {
 
     List<ParticipationRequestDto> getRequestCurrentUser(long userId, long eventId);
 
-    Optional<ParticipationRequestDto> updateRequestCurrentUser(long userId, long eventId, ParticipationRequestDto bodyDto);
+    Optional<EventRequestStatus> updateRequestCurrentUser(long userId, long eventId, EventRequestStatusUpdate bodyDto);
 
     List<ParticipationRequestDto> getRequestOtherUser(long userId);
 
