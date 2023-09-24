@@ -22,13 +22,11 @@ public interface EventService {
 
     Optional<EventFullDto> updateEvent(long userId, long eventId, EventUpdateDto eventUpdateDto);
 
-    List<EventFullDto> getAllEventsInfo(Map<String, ? extends List<? extends Serializable>> parameters,
-                                        LocalDateTime rangeStart, LocalDateTime rangeEnd, PageRequest pageRequest);
+    List<EventFullDto> getAllEventsInfo(Map<String, Object>  parameters, PageRequest pageRequest);
 
     Optional<EventFullDto> updateEventAdmin(long eventId, EventUpdateDto eventUpdateDto);
 
-    List<EventShortDto> getPublicEventsInfo(Map<String, Object> parameters, List<Long> categories,
-                                            LocalDateTime rangeStart, LocalDateTime rangeEnd, PageRequest pageRequest);
+    List<EventShortDto> getPublicEventsInfo(Map<String, Object> parameters, PageRequest pageRequest);
 
     Optional<EventFullDto> getEventById(long id);
 }

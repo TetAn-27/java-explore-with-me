@@ -2,6 +2,7 @@ package ru.practicum.events.controller;
 
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.events.model.EventUpdateDto;
@@ -38,7 +39,7 @@ public class EventPrivateController {
     @PostMapping("/{userId}/events")
     public ResponseEntity<EventFullDto> addEvent(@PathVariable(value = "userId") Long userId,
                                                  @RequestBody  @Valid EventDto eventDto) {
-        return ResponseEntity.of(eventService.addEvent(userId, eventDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(eventService.addEvent(userId, eventDto).get());
     }
 
     @GetMapping("/{userId}/events/{eventId}")

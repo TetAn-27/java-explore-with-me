@@ -26,6 +26,18 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleBadRequestException(final BadRequestException e) {
+        return new ApiError(
+                e.getStackTrace(),
+                e.getMessage(),
+                "Incorrectly made request",
+                HttpStatus.BAD_REQUEST,
+                LocalDateTime.now()
+        );
+    }
+
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handleNotFoundException(final NotFoundException e) {
         return new ApiError(
