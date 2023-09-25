@@ -1,5 +1,6 @@
 package ru.practicum.compilations.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.compilations.model.NewCompilationDto;
@@ -20,7 +21,7 @@ public class CompilationAdminController {
 
     @PostMapping("/compilations")
     public ResponseEntity<CompilationDto> addCompilation(@RequestBody @Valid NewCompilationDto newCompilationDto) {
-        return ResponseEntity.of(compilationService.addCompilation(newCompilationDto));
+        return ResponseEntity.status(HttpStatus.CREATED).body(compilationService.addCompilation(newCompilationDto).get());
     }
 
     @DeleteMapping("/compilation/{compId}")

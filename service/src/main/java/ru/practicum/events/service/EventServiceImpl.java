@@ -17,12 +17,9 @@ import ru.practicum.users.UserRepository;
 import ru.practicum.users.model.User;
 
 import javax.persistence.EntityNotFoundException;
-import javax.xml.bind.ValidationException;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @Slf4j
@@ -97,15 +94,15 @@ public class EventServiceImpl implements EventService {
     public List<EventFullDto> getAllEventsInfo(Map<String, Object> parameters, PageRequest pageRequestMethod) {
         Pageable page = pageRequestMethod;
         LocalDateTime rangeStart = parameters.get("rangeStart") != null ? (LocalDateTime) parameters.get("rangeStart") : LocalDateTime.now();
-        LocalDateTime rangeEnd = parameters.get("endStart") != null ? (LocalDateTime) parameters.get("endStart") : rangeStart.plusYears(1);
+        LocalDateTime rangeEnd = parameters.get("rangeEnd") != null ? (LocalDateTime) parameters.get("rangeEnd") : rangeStart.plusYears(1);
         if (rangeStart.isAfter(rangeEnd)) {
             throw new BadRequestException("Начало события не может быть после конца события");
         }
         do {
             Page<Event> pageRequest = eventRepository.getAllEventsInfo((List<Long>) parameters.get("users"),
-                    (List<State>) parameters.get("states"), (List<Integer>) parameters.get("categories"), rangeStart, rangeEnd, page);
-            pageRequest.getContent().forEach(ItemRequest -> {
-            });
+                    (List<State>) parameters.get("states"), (List<Long>) parameters.get("categories"), rangeStart, rangeEnd, page);
+            List<Event> event = eventRepository.findAll();
+            List<Event> example = pageRequest.getContent();
             if (pageRequest.hasNext()) {
                 page = PageRequest.of(pageRequest.getNumber() + 1, pageRequest.getSize(), pageRequest.getSort());
             } else {
@@ -125,8 +122,7 @@ public class EventServiceImpl implements EventService {
         if (eventUpdateDto.getStateAction() != null) {
             checkStateAction(eventUpdateDto.getStateAction(), event);
         }
-        //return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event)));
-        return Optional.of(EventMapper.toEventFullDto(event));
+        return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event)));
     }
 
     @Override
@@ -166,11 +162,17 @@ public class EventServiceImpl implements EventService {
         event.setAnnotation(eventUpdate.getAnnotation() != null ? eventUpdate.getAnnotation() : event.getAnnotation());
         event.setCategory(eventUpdate.getCategory() != null ? categoryRepository.getCategoryById(eventUpdate.getCategory()) : event.getCategory());
         event.setDescription(eventUpdate.getDescription() != null ? eventUpdate.getDescription() : event.getDescription());
-        event.setLocation(eventUpdate.getLocation() != null ? eventUpdate.getLocation() : event.getLocation());
         event.setPaid(eventUpdate.getPaid() != null ? eventUpdate.getPaid() : event.isPaid());
         event.setParticipantLimit(eventUpdate.getParticipantLimit() != null ? eventUpdate.getParticipantLimit() : event.getParticipantLimit());
         event.setRequestModeration(eventUpdate.getRequestModeration() != null ? eventUpdate.getRequestModeration() : event.isRequestModeration());
         event.setTitle(eventUpdate.getTitle() != null ? eventUpdate.getTitle() : event.getTitle());
+        if (eventUpdate.getLocation() != null) {
+            Location newLocation = eventUpdate.getLocation();
+            Location oldLocation = event.getLocation();
+            oldLocation.setLat(newLocation.getLat());
+            oldLocation.setLon(newLocation.getLon());
+            locationRepository.save(oldLocation);
+        }
         return event;
     }
 

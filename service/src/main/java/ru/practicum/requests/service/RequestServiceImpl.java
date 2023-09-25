@@ -106,6 +106,7 @@ public class RequestServiceImpl implements RequestService {
         for (ParticipationRequest request : requests) {
             if (request.getStatus().equals(Status.PENDING)) {
                 request.setStatus(Status.CONFIRMED);
+                requestRepository.save(request);
                 confirmedRequestList.add(request);
             }
         }
@@ -137,9 +138,11 @@ public class RequestServiceImpl implements RequestService {
             if (request.getStatus().equals(Status.PENDING)) {
                 if (limit > 0) {
                     request.setStatus(Status.CONFIRMED);
+                    requestRepository.save(request);
                     limit--;
                 } else {
                     request.setStatus(Status.REJECTED);
+                    requestRepository.save(request);
                 }
             }
         }

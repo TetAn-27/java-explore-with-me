@@ -29,7 +29,6 @@ public class ParticipationRequest {
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
     private User requester;
-    @Enumerated
-    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private Status status;
 }

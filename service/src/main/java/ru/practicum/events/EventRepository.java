@@ -24,7 +24,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
             "AND (:categories is null or e.category.id in :categories) " +
             "AND e.eventDate > :rangeStart " +
             "AND e.eventDate < :rangeEnd")
-    Page<Event> getAllEventsInfo(List<Long> users, List<State> states, List<Integer> categories,
+    Page<Event> getAllEventsInfo(List<Long> users, List<State> states, List<Long> categories,
                                    LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable page);
 
     List<Event> findByIdIn(Iterable ids);

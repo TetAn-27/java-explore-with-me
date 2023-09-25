@@ -6,4 +6,5 @@ import ru.practicum.events.model.Location;
 public interface LocationRepository extends JpaRepository<Location, Long> {
 
     Location save(Location location);
+    Location getById(long id);
 }

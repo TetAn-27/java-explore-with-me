@@ -1,9 +1,11 @@
 package ru.practicum.events.model;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.Formula;
 import ru.practicum.categories.model.Category;
 import ru.practicum.users.model.User;
 
@@ -20,11 +22,11 @@ public class Event {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String annotation;
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
     @ToString.Exclude
     private Category category;
-    @Column(name = "confirmed_requests", nullable = false)
+    @Formula(value = "(select count(r.id) from requests as r where r.event_id = id and r.status like 'CONFIRMED')")
     private long confirmedRequests;
     @Column(name = "created_on", nullable = false)
     private LocalDateTime createdOn;
