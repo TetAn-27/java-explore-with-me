@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.StatClient;
 import ru.practicum.categories.CategoryRepository;
 import ru.practicum.categories.model.Category;
 import ru.practicum.events.EventRepository;
@@ -30,12 +31,14 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
+    private final StatClient statClient;
 
-    public EventServiceImpl(EventRepository eventRepository, CategoryRepository categoryRepository, UserRepository userRepository, LocationRepository locationRepository) {
+    public EventServiceImpl(EventRepository eventRepository, CategoryRepository categoryRepository, UserRepository userRepository, LocationRepository locationRepository, StatClient statClient) {
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
+        this.statClient = statClient;
     }
     @Override
     public List<EventShortDto> getAllEventsUser(long userId, PageRequest pageRequestMethod) {
