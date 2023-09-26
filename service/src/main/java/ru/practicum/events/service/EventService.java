@@ -6,8 +6,7 @@ import ru.practicum.events.model.EventFullDto;
 import ru.practicum.events.model.EventShortDto;
 import ru.practicum.events.model.EventUpdateDto;
 
-import java.io.Serializable;
-import java.time.LocalDateTime;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,7 +25,7 @@ public interface EventService {
 
     Optional<EventFullDto> updateEventAdmin(long eventId, EventUpdateDto eventUpdateDto);
 
-    List<EventShortDto> getPublicEventsInfo(Map<String, Object> parameters, PageRequest pageRequest);
+    List<EventShortDto> getPublicEventsInfo(Map<String, Object> parameters, PageRequest pageRequest, HttpServletRequest request);
 
-    Optional<EventFullDto> getEventById(long id);
+    Optional<EventFullDto> getEventById(long id, HttpServletRequest request);
 }

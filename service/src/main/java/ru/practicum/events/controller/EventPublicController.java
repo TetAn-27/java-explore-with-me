@@ -10,7 +10,7 @@ import ru.practicum.events.service.EventService;
 import ru.practicum.events.model.EventShortDto;
 import ru.practicum.exception.ConflictException;
 
-import javax.validation.constraints.NotNull;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
@@ -42,7 +42,8 @@ public class EventPublicController {
                                                    @PositiveOrZero  @RequestParam(value = "from", defaultValue = "0",
                                                        required = false) int page,
                                                    @Positive @RequestParam(value = "size", defaultValue = "10",
-                                                       required = false) int size) {
+                                                       required = false) int size,
+                                                   HttpServletRequest request) {
         Map<String, Object> parameters = new HashMap<>();
         parameters.put("text", text);
         parameters.put("categories", categories);
@@ -51,12 +52,13 @@ public class EventPublicController {
         parameters.put("rangeEnd", rangeEnd);
         parameters.put("isAvailable", onlyAvailable);
         PageRequest pageRequest = PageRequest.of(page / size, size, Sort.Direction.ASC, determineSort(sort));
-        return eventService.getPublicEventsInfo(parameters, pageRequest);
+        return eventService.getPublicEventsInfo(parameters, pageRequest, request);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EventFullDto> getEventById(@PathVariable(value = "id") Long id) {
-        return ResponseEntity.of(eventService.getEventById(id));
+    public ResponseEntity<EventFullDto> getEventById(@PathVariable(value = "id") Long id,
+                                                     HttpServletRequest request) {
+        return ResponseEntity.of(eventService.getEventById(id, request));
     }
 
     private String determineSort(String sort) {

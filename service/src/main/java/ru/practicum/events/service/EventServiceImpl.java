@@ -5,7 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import ru.practicum.EndpointHit;
 import ru.practicum.StatClient;
+import ru.practicum.ViewStats;
 import ru.practicum.categories.CategoryRepository;
 import ru.practicum.categories.model.Category;
 import ru.practicum.events.EventRepository;
@@ -18,6 +20,7 @@ import ru.practicum.users.UserRepository;
 import ru.practicum.users.model.User;
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -32,6 +35,7 @@ public class EventServiceImpl implements EventService {
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
     private final StatClient statClient;
+
 
     public EventServiceImpl(EventRepository eventRepository, CategoryRepository categoryRepository, UserRepository userRepository, LocationRepository locationRepository, StatClient statClient) {
         this.eventRepository = eventRepository;
@@ -104,8 +108,6 @@ public class EventServiceImpl implements EventService {
         do {
             Page<Event> pageRequest = eventRepository.getAllEventsInfo((List<Long>) parameters.get("users"),
                     (List<State>) parameters.get("states"), (List<Long>) parameters.get("categories"), rangeStart, rangeEnd, page);
-            List<Event> event = eventRepository.findAll();
-            List<Event> example = pageRequest.getContent();
             if (pageRequest.hasNext()) {
                 page = PageRequest.of(pageRequest.getNumber() + 1, pageRequest.getSize(), pageRequest.getSort());
             } else {
@@ -129,7 +131,8 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    public List<EventShortDto> getPublicEventsInfo(Map<String, Object> parameters, PageRequest pageRequestMethod) {
+    public List<EventShortDto> getPublicEventsInfo(Map<String, Object> parameters, PageRequest pageRequestMethod,
+                                                   HttpServletRequest request) {
         Pageable page = pageRequestMethod;
         LocalDateTime rangeStart = parameters.get("rangeStart") != null ? (LocalDateTime) parameters.get("rangeStart") : LocalDateTime.now();
         LocalDateTime rangeEnd = parameters.get("rangeEnd") != null ? (LocalDateTime) parameters.get("rangeEnd") : rangeStart.plusYears(1);
@@ -137,26 +140,32 @@ public class EventServiceImpl implements EventService {
             throw new BadRequestException("Начало события не может быть после конца события");
         }
         do {
-            Page<Event> pageRequest = eventRepository.getPublicEventsInfo((String) parameters.get("text"), (List<Integer>) parameters.get("categories"), (Boolean) parameters.get("paid"), rangeStart,
+            Page<Event> pageRequest = eventRepository.getPublicEventsInfo((String) parameters.get("text"),
+                    (List<Integer>) parameters.get("categories"), (Boolean) parameters.get("paid"), rangeStart,
                     rangeEnd, (Boolean) parameters.get("onlyAvailable"), page);
-            pageRequest.getContent().forEach(ItemRequest -> {
-            });
             if (pageRequest.hasNext()) {
                 page = PageRequest.of(pageRequest.getNumber() + 1, pageRequest.getSize(), pageRequest.getSort());
             } else {
                 page = null;
+            }
+            List<Event> events = pageRequest.getContent();
+            addHitClient(request.getRequestURI(), request.getRemoteAddr());
+            for (Event event : events) {
+                getStatsClient(event);
             }
             return EventMapper.toListEventShortDto(pageRequest.getContent());
         } while (page != null);
     }
 
     @Override
-    public Optional<EventFullDto> getEventById(long id) {
+    public Optional<EventFullDto> getEventById(long id, HttpServletRequest request) {
         Event event = eventRepository.getByIdAndState(id, State.PUBLISHED);
         if (event == null) {
             log.error("События с Id {} не найдено", id);
             throw new NotFoundException("События с таким Id не было найдено");
         }
+        addHitClient(request.getRequestURI(), request.getRemoteAddr());
+        getStatsClient(event);
         return Optional.of(EventMapper.toEventFullDto(event));
     }
 
@@ -201,5 +210,22 @@ public class EventServiceImpl implements EventService {
                 event.setPublishedOn(LocalDateTime.now());
                 break;
         }
+    }
+
+    private void addHitClient(String uri, String ip) {
+        statClient.addHit(new EndpointHit(
+                null,
+                "ewm-main-service",
+                ip,
+                uri,
+                LocalDateTime.now()
+        ));
+    }
+
+    private void getStatsClient(Event event) {
+        LocalDateTime start = event.getCreatedOn();
+        LocalDateTime end = LocalDateTime.now();
+        List<ViewStats> stats = statClient.getStats(start, end, List.of("/events/" + event.getId()), true);
+        event.setViews(stats.size() == 0 ? 0 : stats.get(0).getHits());
     }
 }

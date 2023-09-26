@@ -2,6 +2,7 @@ package ru.practicum;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class StatController {
     @PostMapping("/hit")
     public ResponseEntity<EndpointHit> addHit(@RequestBody EndpointHit endpointHit) {
         log.info("Сохранена информация о том, что к эндпоинту был запрос {}", endpointHit);
-        return ResponseEntity.of(stateService.addHit(endpointHit));
+        return ResponseEntity.status(HttpStatus.CREATED).body(stateService.addHit(endpointHit).get());
     }
 
     @GetMapping("/stats")
