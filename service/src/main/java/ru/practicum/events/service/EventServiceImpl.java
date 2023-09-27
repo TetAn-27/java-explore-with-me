@@ -22,9 +22,7 @@ import ru.practicum.users.model.User;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -56,7 +54,11 @@ public class EventServiceImpl implements EventService {
             } else {
                 page = null;
             }
-            return EventMapper.toListEventShortDto(pageRequest.getContent());
+            List<Event> events = pageRequest.getContent();
+            for (Event event : events) {
+                getStatsClient(event);
+            }
+            return EventMapper.toListEventShortDto(events);
         } while (page != null);
     }
 
@@ -77,6 +79,7 @@ public class EventServiceImpl implements EventService {
     public Optional<EventFullDto> getEvent(long userId, long eventId) {
         try {
             Event event = eventRepository.getById(eventId);
+            getStatsClient(event);
             return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event)));
         } catch (EntityNotFoundException ex) {
             log.error("События с Id {} не найдено", eventId);
@@ -113,7 +116,11 @@ public class EventServiceImpl implements EventService {
             } else {
                 page = null;
             }
-            return EventMapper.toListEventFullDto(pageRequest.getContent());
+            List<Event> events = pageRequest.getContent();
+            for (Event event : events) {
+                getStatsClient(event);
+            }
+            return EventMapper.toListEventFullDto(events);
         } while (page != null);
     }
 
@@ -124,9 +131,6 @@ public class EventServiceImpl implements EventService {
             throw new ConflictException("Начало события должно быть не раньше, чем за час от даты публикации");
         }
         Event event = getUpdateEvent(eventOld, eventUpdateDto);
-        if (eventUpdateDto.getStateAction() != null) {
-            checkStateAction(eventUpdateDto.getStateAction(), event);
-        }
         return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event)));
     }
 
@@ -185,6 +189,9 @@ public class EventServiceImpl implements EventService {
             oldLocation.setLon(newLocation.getLon());
             locationRepository.save(oldLocation);
         }
+        if (eventUpdate.getStateAction() != null) {
+            checkStateAction(eventUpdate.getStateAction(), event);
+        }
         return event;
     }
 
@@ -216,8 +223,8 @@ public class EventServiceImpl implements EventService {
         statClient.addHit(new EndpointHit(
                 null,
                 "ewm-main-service",
-                ip,
                 uri,
+                ip,
                 LocalDateTime.now()
         ));
     }
@@ -226,6 +233,6 @@ public class EventServiceImpl implements EventService {
         LocalDateTime start = event.getCreatedOn();
         LocalDateTime end = LocalDateTime.now();
         List<ViewStats> stats = statClient.getStats(start, end, List.of("/events/" + event.getId()), true);
-        event.setViews(stats.size() == 0 ? 0 : stats.get(0).getHits());
+        event.setViews(stats.size() == 0 ? 0L : stats.get(0).getHits());
     }
 }

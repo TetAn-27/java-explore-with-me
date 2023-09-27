@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface CompilationService {
 
-    List<CompilationDto> getCollectionsEvents(boolean pinned, PageRequest pageRequest);
+    List<CompilationDto> getCollectionsEvents(Boolean pinned, PageRequest pageRequest);
 
     Optional<CompilationDto> getCompilationById(long compId);
 

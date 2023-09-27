@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.events.EventRepository;
 import ru.practicum.events.model.Event;
+import ru.practicum.events.model.State;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.requests.RequestRepository;
@@ -44,7 +45,11 @@ public class RequestServiceImpl implements RequestService {
     public Optional<EventRequestStatus> updateRequestCurrentUser(long userId, long eventId, EventRequestStatusUpdate bodyUpdate) {
         Event event = eventRepository.getById(eventId);
         int limit = event.getParticipantLimit();
+        int remainingLimit = (int) (limit - event.getConfirmedRequests());
         boolean requirement = (limit == 0) || (!event.isRequestModeration());
+        if (remainingLimit == 0 && bodyUpdate.getStatus().equals(Status.CONFIRMED)) {
+            throw new ConflictException("Лимит участников на мероприятие исчерпан, одобрение заявки невозможно");
+        }
         List<ParticipationRequest> requests = requestRepository.findByIdIn(bodyUpdate.getRequestIds());
         if (requirement) {
             return Optional.of(new EventRequestStatus(
@@ -53,7 +58,7 @@ public class RequestServiceImpl implements RequestService {
             ));
         }
         if (bodyUpdate.getStatus().equals(Status.CONFIRMED)) {
-            requests = setStatusRequestWithLimit(requests, limit);
+            requests = setStatusRequestWithLimit(requests, remainingLimit);
             return Optional.of(new EventRequestStatus(
                     RequestMapper.toListRequestDto(getConfirmedRequest(requests)),
                     RequestMapper.toListRequestDto(getRejectedRequest(requests))
@@ -88,6 +93,16 @@ public class RequestServiceImpl implements RequestService {
                 requester,
                 Status.CONFIRMED
         );
+        if (event.getInitiator().getId() == requester.getId()) {
+            throw new ConflictException("Организатор мероприятия не может отправить заявку на участие в нем");
+        }
+        if (!event.getState().equals(State.PUBLISHED)) {
+            throw new ConflictException("Мероприятие еще не опубликовано. Отправить заявку невозможно");
+        }
+        if (event.getParticipantLimit() == event.getConfirmedRequests()) {
+            throw new ConflictException("Лимит участников на мероприятие исчерпан, отправка завяки невозможна");
+        }
+        checkRequesterUnique(eventId, userId);
         return Optional.of(RequestMapper.toRequestDto(requestRepository.save(request)));
     }
 
@@ -135,6 +150,9 @@ public class RequestServiceImpl implements RequestService {
 
     private List<ParticipationRequest> setStatusRequestWithLimit(List<ParticipationRequest> requests, int limit) {
         for (ParticipationRequest request : requests) {
+            if (limit == 0 && request.getStatus().equals(Status.CONFIRMED)) {
+                throw new ConflictException("Невозможно отменить уже принятую заявку на участие");
+            }
             if (request.getStatus().equals(Status.PENDING)) {
                 if (limit > 0) {
                     request.setStatus(Status.CONFIRMED);
@@ -147,5 +165,12 @@ public class RequestServiceImpl implements RequestService {
             }
         }
         return requests;
+    }
+
+    private void checkRequesterUnique(long eventId, long userId) {
+        ParticipationRequest request = requestRepository.getByEventIdAndRequesterId(eventId, userId);
+        if (request != null) {
+            throw new ConflictException("Нельзя отправить запрос на участие повторно");
+        }
     }
 }

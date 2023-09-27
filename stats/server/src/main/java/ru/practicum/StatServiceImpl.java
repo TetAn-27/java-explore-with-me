@@ -2,6 +2,7 @@ package ru.practicum;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.exception.BadRequestException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -25,6 +26,9 @@ public class StatServiceImpl implements StateService {
     @Override
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         List<EndpointHit.EndpointHitForGet> endpointHits;
+        if (start.isAfter(end)) {
+            throw new BadRequestException("Начало события не может быть после конца события");
+        }
         if (uris==null) {
             if (unique) {
                 endpointHits = statRepository.findDistinctByTimestampBetween(start, end);

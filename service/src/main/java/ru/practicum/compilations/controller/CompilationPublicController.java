@@ -24,12 +24,12 @@ public class CompilationPublicController {
     }
 
     @GetMapping("/compilations")
-    public List<CompilationDto> getCollectionsEvents(@RequestParam(value = "pinned") boolean pinned,
+    public List<CompilationDto> getCollectionsEvents(@RequestParam(value = "pinned", required = false) Boolean pinned,
                                                      @PositiveOrZero @RequestParam(value = "from", defaultValue = "0",
                                                              required = false) int page,
                                                      @Positive @RequestParam(value = "size", defaultValue = "10",
                                                              required = false) int size) {
-        PageRequest pageRequest = PageRequest.of(page / size, size, Sort.Direction.DESC, "id");
+        PageRequest pageRequest = PageRequest.of(page / size, size, Sort.Direction.ASC, "id");
         return compilationService.getCollectionsEvents(pinned, pageRequest);
     }
 

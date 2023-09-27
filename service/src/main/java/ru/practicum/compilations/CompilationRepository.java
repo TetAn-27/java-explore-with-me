@@ -9,4 +9,5 @@ public interface CompilationRepository extends JpaRepository<Compilation, Long> 
     void deleteById(long compId);
     Compilation getById(long compId);
     Page<Compilation> findByPinned(boolean pinned, Pageable page);
+    Page<Compilation> findAll(Pageable page);
 }

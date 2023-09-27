@@ -10,6 +10,7 @@ import ru.practicum.events.model.State;
 import ru.practicum.events.service.EventService;
 import ru.practicum.events.model.EventFullDto;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(path = "/admin/events")
+@Valid
 public class EventAdminController {
 
     private final EventService eventService;
@@ -50,8 +52,9 @@ public class EventAdminController {
     }
 
     @PatchMapping("/{eventId}")
+    @Valid
     public ResponseEntity<EventFullDto> updateEventAdmin(@PathVariable(value = "eventId") Long eventId,
-                                                         @RequestBody EventUpdateDto eventUpdateDto) {
+                                                         @RequestBody @Valid EventUpdateDto eventUpdateDto) {
         return ResponseEntity.of(eventService.updateEventAdmin(eventId, eventUpdateDto));
     }
 }

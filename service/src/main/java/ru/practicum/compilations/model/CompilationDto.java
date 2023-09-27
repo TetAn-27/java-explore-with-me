@@ -18,9 +18,5 @@ public class CompilationDto {
     private long id;
     private List<EventShortDto> events;
     private boolean pinned;
-    @NotNull(message = "поле title является обязательным")
-    @NotBlank(message = "Title не может состоять из пробелов")
-    @NotEmpty(message = "Title не может быть пустым")
-    @Size(min = 3, max = 50)
     private String title;
 }

@@ -16,6 +16,7 @@ import ru.practicum.events.model.Event;
 import ru.practicum.exception.NotFoundException;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,12 +33,15 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public List<CompilationDto> getCollectionsEvents(boolean pinned, PageRequest pageRequestMethod) {
+    public List<CompilationDto> getCollectionsEvents(Boolean pinned, PageRequest pageRequestMethod) {
         Pageable page = pageRequestMethod;
         do {
-            Page<Compilation> pageRequest = compilationRepository.findByPinned(pinned, page);
-            pageRequest.getContent().forEach(ItemRequest -> {
-            });
+            Page<Compilation> pageRequest;
+            if (pinned == null) {
+                pageRequest = compilationRepository.findAll(page);
+            } else {
+                pageRequest = compilationRepository.findByPinned(pinned, page);
+            }
             if (pageRequest.hasNext()) {
                 page = PageRequest.of(pageRequest.getNumber() + 1, pageRequest.getSize(), pageRequest.getSort());
             } else {
@@ -60,6 +64,9 @@ public class CompilationServiceImpl implements CompilationService {
     @Override
     public Optional<CompilationDto> addCompilation(NewCompilationDto newCompilationDto) {
         List<Event> events = eventRepository.findByIdIn(newCompilationDto.getEvents());
+        if (events == null) {
+            events = new ArrayList<>();
+        }
         Compilation compilation = CompilationMapper.toCompilation(newCompilationDto, events);
         return Optional.of(CompilationMapper.toCompilationDto(compilationRepository.save(compilation)));
     }
