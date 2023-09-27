@@ -30,7 +30,7 @@ services:
     depends_on:
       - ewm-db
     environment:
-      - server.url=http://server:9090
+      - server.url=http://stats-server:9090
       - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/service
       - SPRING_DATASOURCE_USERNAME=service
       - SPRING_DATASOURCE_PASSWORD=password
@@ -38,7 +38,7 @@ services:
   ewm-db:
     image: postgres:13.7-alpine
     ports:
-      - "6541:5432"
+      - "6542:5432"
     volumes:
       - /var/lib/postgresql/data/
     environment:
