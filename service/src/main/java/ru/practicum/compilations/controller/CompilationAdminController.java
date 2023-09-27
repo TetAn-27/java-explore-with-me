@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.compilations.model.NewCompilationDto;
+import ru.practicum.compilations.model.UpdateCompilationDto;
 import ru.practicum.compilations.service.CompilationService;
 import ru.practicum.compilations.model.CompilationDto;
 
@@ -24,14 +25,15 @@ public class CompilationAdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(compilationService.addCompilation(newCompilationDto).get());
     }
 
-    @DeleteMapping("/compilation/{compId}")
+    @DeleteMapping("/compilations/{compId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCompilation(@PathVariable("compId") Long compId) {
         compilationService.deleteCompilation(compId);
     }
 
     @PatchMapping("/compilations/{compId}")
     public ResponseEntity<CompilationDto> updateCompilation(@PathVariable("compId") Long compId,
-                                                            @RequestBody  @Valid NewCompilationDto newCompilationDto) {
-        return ResponseEntity.of(compilationService.updateCompilation(compId, newCompilationDto));
+                                                            @RequestBody  @Valid UpdateCompilationDto compilationDto) {
+        return ResponseEntity.of(compilationService.updateCompilation(compId, compilationDto));
     }
 }

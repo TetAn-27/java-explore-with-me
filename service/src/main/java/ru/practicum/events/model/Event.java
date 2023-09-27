@@ -1,5 +1,6 @@
 package ru.practicum.events.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,9 +30,11 @@ public class Event {
     @Formula(value = "(select count(r.id) from requests as r where r.event_id = id and r.status like 'CONFIRMED')")
     private long confirmedRequests;
     @Column(name = "created_on", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdOn;
     private String description;
     @Column(name = "event_date", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "initiator_id", nullable = false)
@@ -45,6 +48,7 @@ public class Event {
     @Column(name = "participant_limit", nullable = false)
     private int participantLimit;
     @Column(name = "published_on", nullable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
     @Column(name = "request_moderation", nullable = false)
     private boolean requestModeration;

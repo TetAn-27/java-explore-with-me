@@ -10,6 +10,9 @@ import ru.practicum.categories.CategoryRepository;
 import ru.practicum.categories.model.Category;
 import ru.practicum.categories.model.CategoryDto;
 import ru.practicum.categories.model.CategoryMapper;
+import ru.practicum.events.EventRepository;
+import ru.practicum.events.model.Event;
+import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 
 import javax.persistence.EntityNotFoundException;
@@ -21,9 +24,11 @@ import java.util.Optional;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final EventRepository eventRepository;
 
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, EventRepository eventRepository) {
         this.categoryRepository = categoryRepository;
+        this.eventRepository = eventRepository;
     }
 
     @Override
@@ -43,6 +48,10 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void deleteCategory(long catId) {
         try {
+            Event event = eventRepository.findFirstByCategoryId(catId);
+            if (event != null) {
+                throw new ConflictException("Категория не может быть удалена");
+            }
             categoryRepository.deleteById(catId);
         } catch (DataAccessException ex) {
             log.error("Категории с Id {} не найдено", catId);

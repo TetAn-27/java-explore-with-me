@@ -140,6 +140,7 @@ public class EventServiceImpl implements EventService {
         Pageable page = pageRequestMethod;
         LocalDateTime rangeStart = parameters.get("rangeStart") != null ? (LocalDateTime) parameters.get("rangeStart") : LocalDateTime.now();
         LocalDateTime rangeEnd = parameters.get("rangeEnd") != null ? (LocalDateTime) parameters.get("rangeEnd") : rangeStart.plusYears(1);
+        List<Event> eventsAll = eventRepository.findAll();
         if (rangeStart.isAfter(rangeEnd)) {
             throw new BadRequestException("Начало события не может быть после конца события");
         }
@@ -157,7 +158,7 @@ public class EventServiceImpl implements EventService {
             for (Event event : events) {
                 getStatsClient(event);
             }
-            return EventMapper.toListEventShortDto(pageRequest.getContent());
+            return EventMapper.toListEventShortDto(events);
         } while (page != null);
     }
 

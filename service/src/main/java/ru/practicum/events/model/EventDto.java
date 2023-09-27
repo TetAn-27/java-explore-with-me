@@ -21,6 +21,7 @@ public class EventDto {
     @NotNull
     private Long category;
     private Long confirmedRequests;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdOn;
     @NotNull(message = "поле description является обязательным")
     @NotBlank(message = "Description не может состоять из пробелов")
@@ -35,6 +36,7 @@ public class EventDto {
     private Location location;
     private Boolean paid;
     private Integer participantLimit;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
     private Boolean requestModeration;
     private State state;

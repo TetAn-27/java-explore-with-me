@@ -7,10 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.compilations.CompilationRepository;
-import ru.practicum.compilations.model.Compilation;
-import ru.practicum.compilations.model.CompilationDto;
-import ru.practicum.compilations.model.CompilationMapper;
-import ru.practicum.compilations.model.NewCompilationDto;
+import ru.practicum.compilations.model.*;
 import ru.practicum.events.EventRepository;
 import ru.practicum.events.model.Event;
 import ru.practicum.exception.NotFoundException;
@@ -63,9 +60,11 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public Optional<CompilationDto> addCompilation(NewCompilationDto newCompilationDto) {
-        List<Event> events = eventRepository.findByIdIn(newCompilationDto.getEvents());
-        if (events == null) {
+        List<Event> events;
+        if (newCompilationDto.getEvents() == null) {
             events = new ArrayList<>();
+        } else {
+            events = eventRepository.findByIdIn(newCompilationDto.getEvents());
         }
         Compilation compilation = CompilationMapper.toCompilation(newCompilationDto, events);
         return Optional.of(CompilationMapper.toCompilationDto(compilationRepository.save(compilation)));
@@ -82,13 +81,13 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
-    public Optional<CompilationDto> updateCompilation(long compId, NewCompilationDto newCompilationDto) {
+    public Optional<CompilationDto> updateCompilation(long compId, UpdateCompilationDto compilationDto) {
         Compilation compOld = compilationRepository.getById(compId);
-        Compilation compilation = getUpdateCompilation(compOld, newCompilationDto);
+        Compilation compilation = getUpdateCompilation(compOld, compilationDto);
         return Optional.of(CompilationMapper.toCompilationDto(compilationRepository.save(compilation)));
     }
 
-    private Compilation getUpdateCompilation(Compilation compOld, NewCompilationDto compNew) {
+    private Compilation getUpdateCompilation(Compilation compOld, UpdateCompilationDto compNew) {
         compOld.setEvents(compNew.getEvents() != null ? eventRepository.findByIdIn(compNew.getEvents()) : compOld.getEvents());
         compOld.setPinned(compNew.getPinned() != null ? compNew.getPinned() : compOld.isPinned());
         compOld.setTitle(compNew.getTitle() != null ? compNew.getTitle() : compOld.getTitle());
