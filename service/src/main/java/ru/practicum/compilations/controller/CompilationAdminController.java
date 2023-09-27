@@ -3,10 +3,10 @@ package ru.practicum.compilations.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.compilations.model.NewCompilationDto;
-import ru.practicum.compilations.model.UpdateCompilationDto;
+import ru.practicum.compilations.dto.NewCompilationDto;
+import ru.practicum.compilations.dto.UpdateCompilationDto;
 import ru.practicum.compilations.service.CompilationService;
-import ru.practicum.compilations.model.CompilationDto;
+import ru.practicum.compilations.dto.CompilationDto;
 
 import javax.validation.Valid;
 

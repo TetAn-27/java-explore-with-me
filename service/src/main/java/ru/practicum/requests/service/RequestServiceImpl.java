@@ -72,37 +72,6 @@ public class RequestServiceImpl implements RequestService {
         }
     }
 
-    /*@Override
-    public Optional<EventRequestStatus> updateRequestCurrentUser(long userId, long eventId, EventRequestStatusUpdate bodyUpdate) {
-        Event event = eventRepository.getById(eventId);
-        int limit = event.getParticipantLimit();
-        int remainingLimit = (int) (limit - event.getConfirmedRequests());
-        boolean requirement = (limit == 0) || (!event.isRequestModeration());
-        if (remainingLimit == 0 && bodyUpdate.getStatus().equals(Status.CONFIRMED)) {
-            throw new ConflictException("Лимит участников на мероприятие исчерпан, одобрение заявки невозможно");
-        }
-        List<ParticipationRequest> requests = requestRepository.findByIdIn(bodyUpdate.getRequestIds());
-        if (requirement) {
-            return Optional.of(new EventRequestStatus(
-                    RequestMapper.toListRequestDto(confirmedRequest(requests)),
-                    RequestMapper.toListRequestDto(getRejectedRequest(requests))
-            ));
-        }
-        if (bodyUpdate.getStatus().equals(Status.CONFIRMED)) {
-            requests = setStatusRequestWithLimit(requests, remainingLimit);
-            return Optional.of(new EventRequestStatus(
-                    RequestMapper.toListRequestDto(getConfirmedRequest(requests)),
-                    RequestMapper.toListRequestDto(getRejectedRequest(requests))
-            ));
-        } else {
-            requests = setStatusRequestWithLimit(requests, 0);
-            return Optional.of(new EventRequestStatus(
-                    RequestMapper.toListRequestDto(getConfirmedRequest(requests)),
-                    RequestMapper.toListRequestDto(getRejectedRequest(requests))
-            ));
-        }
-    }*/
-
     @Override
     public List<ParticipationRequestDto> getRequestOtherUser(long userId) {
         try {
@@ -117,7 +86,6 @@ public class RequestServiceImpl implements RequestService {
     public Optional<ParticipationRequestDto> addRequest(long userId, long eventId) {
         Event event = eventRepository.getById(eventId);
         User requester = userRepository.getById(userId);
-        //List<ParticipationRequest> requests = requestRepository.findByEventId(eventId);
         ParticipationRequest request = new ParticipationRequest(
                 0,
                 LocalDateTime.now(),

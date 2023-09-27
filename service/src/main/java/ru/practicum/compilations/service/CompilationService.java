@@ -1,9 +1,9 @@
 package ru.practicum.compilations.service;
 
 import org.springframework.data.domain.PageRequest;
-import ru.practicum.compilations.model.CompilationDto;
-import ru.practicum.compilations.model.NewCompilationDto;
-import ru.practicum.compilations.model.UpdateCompilationDto;
+import ru.practicum.compilations.dto.CompilationDto;
+import ru.practicum.compilations.dto.NewCompilationDto;
+import ru.practicum.compilations.dto.UpdateCompilationDto;
 
 import java.util.List;
 import java.util.Optional;

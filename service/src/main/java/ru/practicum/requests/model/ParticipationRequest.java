@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import ru.practicum.events.model.Event;
-import ru.practicum.events.model.State;
 import ru.practicum.users.model.User;
 
 import javax.persistence.*;

@@ -1,5 +1,6 @@
 package ru.practicum.compilations.model;
 
+import ru.practicum.compilations.dto.*;
 import ru.practicum.events.model.Event;
 import ru.practicum.events.model.EventMapper;
 

@@ -1,15 +1,10 @@
 package ru.practicum.events.model;
 
-import lombok.ToString;
 import ru.practicum.categories.model.Category;
-import ru.practicum.categories.model.CategoryDto;
 import ru.practicum.categories.model.CategoryMapper;
 import ru.practicum.users.model.User;
 import ru.practicum.users.model.UserMapper;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
