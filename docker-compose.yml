@@ -6,7 +6,7 @@ services:
       - "9090:9090"
     depends_on:
       - stats-db
-      #- ewm-service
+      - ewm-service
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
       - SPRING_DATASOURCE_USERNAME=postgres
@@ -23,25 +23,25 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
 
-  #ewm-service:
-    #build: ./service
-    #ports:
-      #- "8080:8080"
-    #depends_on:
-      #- ewm-db
-    #environment:
-      #- EXPLORE_WITH_ME_STATS_SERVER_URL=http://server:9090
-      #- SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/service
-      #- SPRING_DATASOURCE_USERNAME=user
-      #- SPRING_DATASOURCE_PASSWORD=password
+  ewm-service:
+    build: ./service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - ewm-db
+    environment:
+      - server.url=http://server:9090
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/service
+      - SPRING_DATASOURCE_USERNAME=service
+      - SPRING_DATASOURCE_PASSWORD=password
 
-  #ewm-db:
-    #image: postgres:13.7-alpine
-    #ports:
-      #- "6541:5432"
-    #volumes:
-      #- /var/lib/postgresql/data/
-    #environment:
-      #- POSTGRES_DB=service
-      #- POSTGRES_USER=user
-      #- POSTGRES_PASSWORD=password
+  ewm-db:
+    image: postgres:13.7-alpine
+    ports:
+      - "6541:5432"
+    volumes:
+      - /var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=service
+      - POSTGRES_USER=service
+      - POSTGRES_PASSWORD=password
