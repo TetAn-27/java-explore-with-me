@@ -32,4 +32,8 @@ public class Comment {
     @Column(name = "created_date", nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdDate;
+    @Column(name = "is_initiator", nullable = false)
+    private boolean isInitiator;
+    @Column(name = "is_update", nullable = false)
+    private boolean isUpdate;
 }
