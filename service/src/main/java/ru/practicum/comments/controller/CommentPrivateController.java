@@ -5,31 +5,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.comments.dto.CommentDto;
 import ru.practicum.comments.dto.CommentDtoForGet;
-import ru.practicum.comments.service.CommentService;
+import ru.practicum.comments.service.CommentPrivateService;
 
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(path = "/users")
+@RequestMapping(path = "/users/{userId}/events/{eventId}/comments")
 public class CommentPrivateController {
 
-    private final CommentService commentService;
+    private final CommentPrivateService commentPrivateService;
 
-    public CommentPrivateController(CommentService commentService) {
-        this.commentService = commentService;
+    public CommentPrivateController(CommentPrivateService commentPrivateService) {
+        this.commentPrivateService = commentPrivateService;
     }
 
-    @PostMapping("/{userId}/events/{eventId}/comments")
+    @PostMapping()
     public ResponseEntity<CommentDtoForGet> postComment(@PathVariable(value = "userId") Long userId,
                                                         @PathVariable(value = "eventId") Long eventId,
                                                         @RequestBody @Valid CommentDto commentDto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(commentService.postComment(userId, eventId, commentDto).get());
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentPrivateService.postComment(userId, eventId, commentDto).get());
     }
 
-    @PatchMapping("/{userId}/events/{eventId}/comments")
+    @PatchMapping("/{commentId}")
     public ResponseEntity<CommentDtoForGet> updateComment(@PathVariable(value = "userId") Long userId,
                                                           @PathVariable(value = "eventId") Long eventId,
+                                                          @PathVariable(value = "commentId") Long commentId,
                                                           @RequestBody @Valid CommentDto commentDto) {
-        return ResponseEntity.of(commentService.updateComment(userId, eventId, commentDto));
+        return ResponseEntity.of(commentPrivateService.updateComment(userId, eventId, commentId, commentDto));
     }
 }

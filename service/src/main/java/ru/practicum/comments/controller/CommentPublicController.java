@@ -5,7 +5,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.comments.dto.CommentDtoForGet;
-import ru.practicum.comments.service.CommentService;
+import ru.practicum.comments.service.CommentPrivateService;
+import ru.practicum.comments.service.CommentPublicService;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -15,15 +16,15 @@ import java.util.List;
 @RequestMapping(path = "/comments")
 public class CommentPublicController {
 
-    private final CommentService commentService;
+    private final CommentPublicService commentPublicService;
 
-    public CommentPublicController(CommentService commentService) {
-        this.commentService = commentService;
+    public CommentPublicController(CommentPublicService commentPublicService) {
+        this.commentPublicService = commentPublicService;
     }
 
     @GetMapping("/{commentId}")
     public ResponseEntity<CommentDtoForGet> getEventForPublic(@PathVariable(value = "commentId") Long comId) {
-        return ResponseEntity.of(commentService.getEventForPublic(comId));
+        return ResponseEntity.of(commentPublicService.getEventForPublic(comId));
     }
 
     @GetMapping("/event/{eventId}")
@@ -33,6 +34,6 @@ public class CommentPublicController {
                                                       @Positive @RequestParam(value = "size", defaultValue = "10",
                                                         required = false) int size) {
         PageRequest pageRequest = PageRequest.of(page / size, size, Sort.Direction.ASC, "id");
-        return commentService.getAllCommentsEvent(eventId, pageRequest);
+        return commentPublicService.getAllCommentsEvent(eventId, pageRequest);
     }
 }
