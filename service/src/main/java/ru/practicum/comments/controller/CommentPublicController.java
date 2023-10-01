@@ -5,7 +5,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.comments.dto.CommentDtoForGet;
-import ru.practicum.comments.service.CommentPrivateService;
 import ru.practicum.comments.service.CommentPublicService;
 
 import javax.validation.constraints.Positive;
