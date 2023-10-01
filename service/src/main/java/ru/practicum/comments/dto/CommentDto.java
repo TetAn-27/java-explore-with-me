@@ -16,6 +16,6 @@ public class CommentDto {
     @NotNull(message = "поле text является обязательным")
     @NotBlank(message = "Text не может состоять из пробелов")
     @NotEmpty(message = "Text не может быть пустым")
-    @Size(min = 1, max = 10000)
+    @Size(min = 3, max = 10000)
     private String text;
 }

@@ -1,6 +1,7 @@
 package ru.practicum.comments.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import ru.practicum.comments.CommentRepository;
 import ru.practicum.comments.dto.CommentDto;
@@ -9,6 +10,7 @@ import ru.practicum.comments.model.Comment;
 import ru.practicum.comments.model.CommentMapper;
 import ru.practicum.events.EventRepository;
 import ru.practicum.events.model.Event;
+import ru.practicum.events.model.State;
 import ru.practicum.exception.ConflictException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.users.UserRepository;
@@ -34,6 +36,9 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     public Optional<CommentDtoForGet> postComment(long userId, long eventId, CommentDto commentDto) {
         User author = getAuthor(userId);
         Event event = getEvent(eventId);
+        if (!event.getState().equals(State.PUBLISHED)) {
+            throw new ConflictException("Событие не опубликовано, оставить комментарий невозможно");
+        }
         Comment comment = CommentMapper.toComment(commentDto, event, author);
         log.debug("Comment с от пользователя {} был создан", author.getName());
         return Optional.of(CommentMapper.toCommentDtoForGet(commentRepository.save(comment)));
@@ -51,6 +56,23 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
         Comment commentNew = getUpdateComment(comment, commentDto);
         log.debug("Comment с id {} был обновлен", commentNew.getId());
         return Optional.of(CommentMapper.toCommentDtoForGet(commentRepository.save(commentNew)));
+    }
+
+    @Override
+    public void deleteComment(long userId, long eventId, long commentId) {
+        Comment comment = getComment(commentId);
+        if (userId != comment.getAuthor().getId()) {
+            throw new ConflictException("Пользователь не является создателем комментария. Удаление комментария невозможно");
+        }
+        if (eventId != comment.getEvent().getId()) {
+            throw new ConflictException("Данный комментарий не относится к этому событию. Удаление комментария невозможно");
+        }
+        try {
+            commentRepository.deleteById(commentId);
+        } catch (DataAccessException ex) {
+            log.error("Комментария с Id {} не найдено", commentId);
+            throw new NotFoundException("Комментария с таким Id не было найдено");
+        }
     }
 
     private User getAuthor(long id) {

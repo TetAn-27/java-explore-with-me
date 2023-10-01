@@ -33,4 +33,12 @@ public class CommentPrivateController {
                                                           @RequestBody @Valid CommentDto commentDto) {
         return ResponseEntity.of(commentPrivateService.updateComment(userId, eventId, commentId, commentDto));
     }
+
+    @DeleteMapping("/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteComment(@PathVariable(value = "userId") Long userId,
+                              @PathVariable(value = "eventId") Long eventId,
+                              @PathVariable("commentId") Long commentId) {
+        commentPrivateService.deleteComment(userId, eventId, commentId);
+    }
 }

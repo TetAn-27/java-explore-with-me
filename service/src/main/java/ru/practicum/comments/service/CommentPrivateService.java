@@ -10,4 +10,6 @@ public interface CommentPrivateService {
     Optional<CommentDtoForGet> postComment(long userId, long eventId, CommentDto commentDto);
 
     Optional<CommentDtoForGet> updateComment(long userId, long eventId, long commentId, CommentDto commentDto);
+
+    void deleteComment(long userId, long eventId, long commentId);
 }

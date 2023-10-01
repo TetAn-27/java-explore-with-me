@@ -34,7 +34,7 @@ public class CommentPublicServiceImpl implements CommentPublicService {
     @Override
     public List<CommentDtoForGet> getAllCommentsEvent(long eventId, PageRequest pageRequest) {
         Pageable page = pageRequest;
-        List<CommentDtoForGet> comments = commentRepository.findByEventId(eventId, page);
+        List<CommentDtoForGet> comments = CommentMapper.toListCommentDto(commentRepository.findAllByEventId(eventId, page));
         return comments;
     }
 }

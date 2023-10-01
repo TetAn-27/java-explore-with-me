@@ -27,7 +27,7 @@ public class CommentPublicController {
         return ResponseEntity.of(commentPublicService.getEventForPublic(comId));
     }
 
-    @GetMapping("/event/{eventId}")
+    @GetMapping("/events/{eventId}")
     public List<CommentDtoForGet> getAllCommentsEvent(@PathVariable(value = "eventId") Long eventId,
                                                       @PositiveOrZero @RequestParam(value = "from", defaultValue = "0",
                                                         required = false) int page,
