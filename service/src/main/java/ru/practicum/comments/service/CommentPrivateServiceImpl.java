@@ -22,6 +22,12 @@ import java.util.Optional;
 @Service
 public class CommentPrivateServiceImpl implements CommentPrivateService {
 
+    private static final String CONFLICT_USER_NOT_CREATOR = "Пользователь не является создателем комментария." +
+            "Изменение комментария невозможно";
+    private static final String CONFLICT_COM_NOT_APPLY_EVENT = "Данный комментарий не относится к этому событию." +
+            "Изменение комментария невозможно";
+    private static final String NOT_FOUND_COM = "Комментария с таким id не найдено";
+
     private final CommentRepository commentRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
@@ -48,10 +54,10 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     public Optional<CommentDtoForGet> updateComment(long userId, long eventId, long commentId, CommentDto commentDto) {
         Comment comment = getComment(commentId);
         if (userId != comment.getAuthor().getId()) {
-            throw new ConflictException("Пользователь не является создателем комментария. Изменение комментария невозможно");
+            throw new ConflictException(CONFLICT_USER_NOT_CREATOR);
         }
         if (eventId != comment.getEvent().getId()) {
-            throw new ConflictException("Данный комментарий не относится к этому событию. Изменение комментария невозможно");
+            throw new ConflictException(CONFLICT_COM_NOT_APPLY_EVENT);
         }
         Comment commentNew = getUpdateComment(comment, commentDto);
         log.debug("Comment с id {} был обновлен", commentNew.getId());
@@ -62,16 +68,16 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
     public void deleteComment(long userId, long eventId, long commentId) {
         Comment comment = getComment(commentId);
         if (userId != comment.getAuthor().getId()) {
-            throw new ConflictException("Пользователь не является создателем комментария. Удаление комментария невозможно");
+            throw new ConflictException(CONFLICT_USER_NOT_CREATOR);
         }
         if (eventId != comment.getEvent().getId()) {
-            throw new ConflictException("Данный комментарий не относится к этому событию. Удаление комментария невозможно");
+            throw new ConflictException(CONFLICT_COM_NOT_APPLY_EVENT);
         }
         try {
             commentRepository.deleteById(commentId);
         } catch (DataAccessException ex) {
             log.error("Комментария с Id {} не найдено", commentId);
-            throw new NotFoundException("Комментария с таким Id не было найдено");
+            throw new NotFoundException(NOT_FOUND_COM);
         }
     }
 
@@ -87,7 +93,7 @@ public class CommentPrivateServiceImpl implements CommentPrivateService {
 
     private Comment getComment(long id) {
         return commentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Комментария с таким id не найдено"));
+                .orElseThrow(() -> new NotFoundException(NOT_FOUND_COM));
     }
 
     private Comment getUpdateComment(Comment comment, CommentDto commentDto) {
