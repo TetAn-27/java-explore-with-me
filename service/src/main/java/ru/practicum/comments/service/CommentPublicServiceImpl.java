@@ -24,11 +24,11 @@ public class CommentPublicServiceImpl implements CommentPublicService {
     }
 
     @Override
-    public Optional<CommentDtoForGet> getEventForPublic(long id) {
+    public Optional<CommentDtoForGet> getCommentForPublic(long id) {
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Комментария с таким id не найдено"));
         log.debug("Comment: {}", comment);
-        return Optional.of(CommentMapper.toCommentDtoForGet(commentRepository.getById(id)));
+        return Optional.of(CommentMapper.toCommentDtoForGet(comment));
     }
 
     @Override

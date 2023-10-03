@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface CommentPublicService {
 
-    Optional<CommentDtoForGet> getEventForPublic(long comId);
+    Optional<CommentDtoForGet> getCommentForPublic(long comId);
 
     List<CommentDtoForGet> getAllCommentsEvent(long eventId, PageRequest pageRequest);
 }

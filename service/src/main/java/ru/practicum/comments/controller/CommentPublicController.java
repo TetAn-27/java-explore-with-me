@@ -23,7 +23,7 @@ public class CommentPublicController {
 
     @GetMapping("/{commentId}")
     public ResponseEntity<CommentDtoForGet> getEventForPublic(@PathVariable(value = "commentId") Long comId) {
-        return ResponseEntity.of(commentPublicService.getEventForPublic(comId));
+        return ResponseEntity.of(commentPublicService.getCommentForPublic(comId));
     }
 
     @GetMapping("/events/{eventId}")
