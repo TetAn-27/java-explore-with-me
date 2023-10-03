@@ -10,6 +10,9 @@ import ru.practicum.StatClient;
 import ru.practicum.ViewStats;
 import ru.practicum.categories.CategoryRepository;
 import ru.practicum.categories.model.Category;
+import ru.practicum.comments.CommentRepository;
+import ru.practicum.comments.dto.CommentDtoForGet;
+import ru.practicum.comments.model.CommentMapper;
 import ru.practicum.events.EventRepository;
 import ru.practicum.events.LocationRepository;
 import ru.practicum.events.model.*;
@@ -32,14 +35,16 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final LocationRepository locationRepository;
+    private final CommentRepository commentRepository;
     private final StatClient statClient;
 
 
-    public EventServiceImpl(EventRepository eventRepository, CategoryRepository categoryRepository, UserRepository userRepository, LocationRepository locationRepository, StatClient statClient) {
+    public EventServiceImpl(EventRepository eventRepository, CategoryRepository categoryRepository, UserRepository userRepository, LocationRepository locationRepository, CommentRepository commentRepository, StatClient statClient) {
         this.eventRepository = eventRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
         this.locationRepository = locationRepository;
+        this.commentRepository = commentRepository;
         this.statClient = statClient;
     }
     @Override
@@ -72,7 +77,7 @@ public class EventServiceImpl implements EventService {
         event.setState(State.PENDING);
         locationRepository.save(event.getLocation());
         log.debug("Событие создано: {}", event);
-        return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event)));
+        return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event), new ArrayList<>()));
     }
 
     @Override
@@ -80,7 +85,7 @@ public class EventServiceImpl implements EventService {
         try {
             Event event = eventRepository.getById(eventId);
             getStatsClient(event);
-            return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event)));
+            return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event), getCommentList(eventId)));
         } catch (EntityNotFoundException ex) {
             log.error("События с Id {} не найдено", eventId);
             throw new NotFoundException("События с таким Id не было найдено");
@@ -97,7 +102,7 @@ public class EventServiceImpl implements EventService {
             throw new ConflictException("Начало события должно быть не раньше, чем за два часа от текущего врмени");
         }
         Event event = getUpdateEvent(eventOld, eventUpdateDto);
-        return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event)));
+        return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event), getCommentList(eventId)));
     }
 
     @Override
@@ -120,7 +125,7 @@ public class EventServiceImpl implements EventService {
             for (Event event : events) {
                 getStatsClient(event);
             }
-            return EventMapper.toListEventFullDto(events);
+            return toListEventFullDto(events);
         } while (page != null);
     }
 
@@ -131,7 +136,7 @@ public class EventServiceImpl implements EventService {
             throw new ConflictException("Начало события должно быть не раньше, чем за час от даты публикации");
         }
         Event event = getUpdateEvent(eventOld, eventUpdateDto);
-        return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event)));
+        return Optional.of(EventMapper.toEventFullDto(eventRepository.save(event), getCommentList(eventId)));
     }
 
     @Override
@@ -140,7 +145,6 @@ public class EventServiceImpl implements EventService {
         Pageable page = pageRequestMethod;
         LocalDateTime rangeStart = parameters.get("rangeStart") != null ? (LocalDateTime) parameters.get("rangeStart") : LocalDateTime.now();
         LocalDateTime rangeEnd = parameters.get("rangeEnd") != null ? (LocalDateTime) parameters.get("rangeEnd") : rangeStart.plusYears(1);
-        List<Event> eventsAll = eventRepository.findAll();
         if (rangeStart.isAfter(rangeEnd)) {
             throw new BadRequestException("Начало события не может быть после конца события");
         }
@@ -171,7 +175,7 @@ public class EventServiceImpl implements EventService {
         }
         addHitClient(request.getRequestURI(), request.getRemoteAddr());
         getStatsClient(event);
-        return Optional.of(EventMapper.toEventFullDto(event));
+        return Optional.of(EventMapper.toEventFullDto(event, getCommentList(id)));
     }
 
     private Event getUpdateEvent(Event event, EventUpdateDto eventUpdate) {
@@ -235,5 +239,18 @@ public class EventServiceImpl implements EventService {
         LocalDateTime end = LocalDateTime.now();
         List<ViewStats> stats = statClient.getStats(start, end, List.of("/events/" + event.getId()), true);
         event.setViews(stats.size() == 0 ? 0L : stats.get(0).getHits());
+    }
+
+    private List<EventFullDto> toListEventFullDto(List<Event> eventList) {
+        List<EventFullDto> eventFullDtoList = new ArrayList<>();
+        for (Event event : eventList) {
+            List<CommentDtoForGet> comments = getCommentList(event.getId());
+            eventFullDtoList.add(EventMapper.toEventFullDto(event, comments));
+        }
+        return eventFullDtoList;
+    }
+
+    private List<CommentDtoForGet> getCommentList(long id) {
+        return CommentMapper.toListCommentDto(commentRepository.findByEventId(id));
     }
 }

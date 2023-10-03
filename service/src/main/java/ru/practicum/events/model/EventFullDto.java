@@ -4,10 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.comments.dto.CommentDtoForGet;
 import ru.practicum.users.model.UserDto;
 import ru.practicum.categories.model.CategoryDto;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -32,4 +34,5 @@ public class EventFullDto {
     private State state;
     private String title;
     private long views;
+    private List<CommentDtoForGet> comments;
 }
