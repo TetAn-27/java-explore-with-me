@@ -33,8 +33,7 @@ public class CommentPublicServiceImpl implements CommentPublicService {
 
     @Override
     public List<CommentDtoForGet> getAllCommentsEvent(long eventId, PageRequest pageRequest) {
-        Pageable page = pageRequest;
-        List<CommentDtoForGet> comments = CommentMapper.toListCommentDto(commentRepository.findAllByEventId(eventId, page));
+        List<CommentDtoForGet> comments = CommentMapper.toListCommentDto(commentRepository.findAllByEventId(eventId, pageRequest));
         log.debug("По данному запросу нашлось {} комментариев", comments.size());
         return comments;
     }
